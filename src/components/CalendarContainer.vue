@@ -6,48 +6,48 @@
           <h3>CALENDAR</h3>
           <div class="select-date">
             {{ getDate }}
-            <svg
-              width="7"
-              height="3"
-              viewBox="0 0 7 3"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3.5 3L0.468911 -9.41288e-08L6.53109 4.35844e-07L3.5 3Z"
-                fill="#AEAEAE"
-              />
-            </svg>
+            <SvgCaretDown class="svg-date" fill="#109cf1" />
           </div>
         </div>
         <div class="calendar__header--right">
-          <div>big screen</div>
-          <div>close modal</div>
+          <SvgFullScreen class="header__svg" />
+          <SvgClose class="header__svg" />
         </div>
       </div>
       <div class="calendar__subheader">
-        <div>Today</div>
-        <div>...</div>
+        <div class="today__btn">Today</div>
+        <SvgMenu class="subheader__svg" />
       </div>
       <div class="calendar__body">
-        <h1>Calendar Feature</h1>
+        <MainCalendar />
       </div>
     </div>
   </transition>
 </template>
 
 <script>
+import SvgCaretDown from "./svgs/SvgCaretDown";
+import SvgFullScreen from "./svgs/SvgFullScreen";
+import SvgClose from "./svgs/SvgClose";
+import SvgMenu from "./svgs/SvgMenu";
+import MainCalendar from "./MainCalendar";
 export default {
   name: "Calendar Container",
+  components: {
+    SvgCaretDown,
+    SvgFullScreen,
+    SvgClose,
+    SvgMenu,
+    MainCalendar,
+  },
   methods: {},
   computed: {
     getDate: () => {
       let options = {
+        weekday: "short",
         month: "short",
         day: "numeric",
-        year: "numeric",
       };
-
       return new Date().toLocaleDateString("en-US", options);
     },
   },
@@ -56,7 +56,6 @@ export default {
 
 <style lang="scss" scoped>
 .calendar__wrapper {
-  padding: 12px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -72,8 +71,11 @@ export default {
 }
 
 .calendar__header {
+  padding: 12px;
   display: flex;
   justify-content: space-between;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(60, 60, 60, 0.09);
   .calendar__header--left {
     h3 {
       font-size: 10px;
@@ -81,24 +83,44 @@ export default {
       color: $fontlight;
     }
     .select-date {
-      margin-top: 5px;
-      font-size: 14px;
+      color: $accentblue;
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 500;
       display: flex;
       align-items: center;
-      svg {
-        margin-left: 5px;
-        transform: scale(1.2);
+      .svg-date {
+        margin-left: 4px;
+        width: 12px;
+        height: auto;
+        stroke-opacity: 0;
       }
     }
   }
   .calendar__header--right {
     display: flex;
+    align-items: center;
+    .header__svg {
+      width: 15px;
+      height: auto;
+      fill: $fontdark;
+      margin: 5px;
+    }
   }
 }
 
 .calendar__subheader {
+  padding: 12px;
   display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
   justify-content: space-between;
+  border-bottom: 1px solid rgba(14, 14, 14, 0.194);
+  .today__btn {
+    font-size: 13px;
+    color: $accentblue;
+    font-weight: 500;
+  }
 }
 
 .pop-enter,

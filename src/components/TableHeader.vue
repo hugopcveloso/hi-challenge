@@ -18,7 +18,9 @@
         </svg>
       </div>
     </div>
-    <button class="add_contact">Add contact</button>
+    <button @click="$store.dispatch('fetchMeetings', 1)" class="add_contact">
+      Add contact
+    </button>
   </div>
 </template>
 

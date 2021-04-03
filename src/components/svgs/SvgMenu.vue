@@ -1,0 +1,55 @@
+<template>
+  <svg
+    version="1.1"
+    id="svg__menu"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
+    viewBox="0 0 384 384"
+    style="enable-background: new 0 0 384 384"
+    xml:space="preserve"
+  >
+    <g>
+      <g>
+        <circle cx="192" cy="42.667" r="42.667" />
+      </g>
+    </g>
+    <g>
+      <g>
+        <circle cx="192" cy="192" r="42.667" />
+      </g>
+    </g>
+    <g>
+      <g>
+        <circle cx="192" cy="341.333" r="42.667" />
+      </g>
+    </g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+    <g></g>
+  </svg>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+#svg__menu {
+  width: 12px !important;
+  height: 12px !important;
+}
+</style>

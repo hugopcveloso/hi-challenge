@@ -15,22 +15,34 @@
         <td class="column column__check">
           <CheckIcon />
         </td>
-        <td @click="$store.dispatch('showModal')" class="column column__name">
+        <td
+          @click="$store.dispatch('openCalendar', client.id)"
+          class="column column__name"
+        >
           {{ client.name }}
         </td>
-        <td @click="$store.dispatch('showModal')" class="column column__email">
+        <td
+          @click="$store.dispatch('openCalendar', client.id)"
+          class="column column__email"
+        >
           {{ client.email }}
         </td>
         <td
-          @click="$store.dispatch('showModal')"
+          @click="$store.dispatch('openCalendar', client.id)"
           class="column column__company"
         >
           {{ client.company }}
         </td>
-        <td @click="$store.dispatch('showModal')" class="column column__role">
+        <td
+          @click="$store.dispatch('openCalendar', client.id)"
+          class="column column__role"
+        >
           {{ client.role }}
         </td>
-        <td @click="$store.dispatch('showModal')" class="column column__recent">
+        <td
+          @click="$store.dispatch('openCalendar', client.id)"
+          class="column column__recent"
+        >
           {{ recentDate(client) }}
         </td>
       </tr>
@@ -48,7 +60,6 @@ export default {
 
   methods: {
     recentDate(client) {
-      console.log(client.meetings[0]?.end_time);
       let options = {
         month: "short",
         day: "numeric",
