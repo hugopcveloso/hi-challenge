@@ -1,18 +1,25 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <main class="home">
+    <TableContainer />
+  </main>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import TableContainer from "../components/TableContainer";
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    TableContainer,
+  },
+};
 </script>
+
+<style lang="scss" scoped>
+main {
+  display: grid;
+  place-items: center;
+}
+.home {
+  min-height: calc(100vh - (60px + 250px));
+}
+</style>
