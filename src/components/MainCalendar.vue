@@ -10,6 +10,7 @@
         class="event__container"
       >
         <div class="event">
+          <p>{{ meeting.client?.id === $store.state.activeClient }}</p>
           <p class="meeting-name" :meeting="meeting.name">
             {{ meeting.name }}
           </p>
@@ -54,6 +55,22 @@ export default {
   padding: 12px;
   max-height: 70vh;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 12px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $accentblue;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $fontlight;
+  }
+  &::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: inset 7px 10px 12px #f0f0f0;
+  }
 }
 
 .calendar__day {

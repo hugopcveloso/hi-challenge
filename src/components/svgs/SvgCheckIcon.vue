@@ -7,6 +7,9 @@
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <!-- SELECTED -> BLUE rect -->
+      <rect v-if="selected" width="16" height="16" rx="4" fill="#109CF1" />
+
       <rect
         x="1"
         y="1"
@@ -21,7 +24,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    selected: {
+      type: Boolean,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -12,12 +12,35 @@
         fill="#C2CFE0"
       />
     </svg>
-    <input class="search__field" type="text" placeholder="Global Search" />
+    <input
+      class="search__field"
+      type="search"
+      placeholder="Global Search"
+      v-model="searching"
+    />
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data: () => ({
+    debouce: null,
+    typing: null,
+  }),
+  computed: {
+    searching: {
+      get() {
+        return this.$store.state.searchTerm;
+      },
+      set(newValue) {
+        clearTimeout(this.debounce);
+        this.debounce = setTimeout(() => {
+          this.$store.dispatch("fetchClients", newValue);
+        }, 1000);
+      },
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -34,6 +57,9 @@ export default {};
     font-size: 12px;
     line-height: 18px;
     color: #90a0b7;
+    &::placeholder {
+      color: #90a0b7;
+    }
   }
 }
 </style>

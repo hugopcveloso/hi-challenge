@@ -10,8 +10,11 @@
           </div>
         </div>
         <div class="calendar__header--right">
-          <SvgFullScreen class="header__svg" />
-          <SvgClose class="header__svg" />
+          <SvgFullScreen class="header__svg" id="fullscreen__svg" />
+          <SvgClose
+            @click="$store.state.showCalendarModal = false"
+            class="header__svg"
+          />
         </div>
       </div>
       <div class="calendar__subheader">
@@ -103,8 +106,16 @@ export default {
     .header__svg {
       width: 15px;
       height: auto;
-      fill: $fontdark;
-      margin: 5px;
+      fill: $fontlight;
+      transition: all 0.5s ease;
+
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+      }
+    }
+    #fullscreen__svg {
+      margin-right: 25px;
     }
   }
 }
@@ -113,7 +124,7 @@ export default {
   padding: 12px;
   display: flex;
   margin-top: 5px;
-  margin-bottom: 5px;
+
   justify-content: space-between;
   border-bottom: 1px solid rgba(14, 14, 14, 0.194);
   .today__btn {
