@@ -196,10 +196,8 @@ export default createStore({
         let getCompanies = state.clients.map((el)=> {
           return el.company
         })
-        let uniqueCompanies = [...new Set(getCompanies)];
+        uniqueCompanies = [...new Set(getCompanies)];
       }
-      
-     
       return ['All', ...uniqueCompanies]
     },
     getLimit: (state)=> {
