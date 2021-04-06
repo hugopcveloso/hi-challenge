@@ -5,7 +5,7 @@
         <th class="column column__check">
           <SvgCheckIcon
             :selected="areAllClientsSelected"
-            @click="$store.dispatch('selectAllClients', getAllClients)"
+            @click="$store.dispatch('highlightAllClients', getAllClients)"
           />
         </th>
         <th class="column column__name">Name</th>
@@ -27,7 +27,7 @@
         <td class="column column__check">
           <SvgCheckIcon
             :selected="isClientSelected(client)"
-            @click="$store.dispatch('selectClients', client)"
+            @click="$store.dispatch('highlightClients', client)"
           />
         </td>
         <td

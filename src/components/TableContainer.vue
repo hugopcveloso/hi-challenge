@@ -36,7 +36,7 @@ export default {
 
 <style lang="scss" scoped>
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   background: rgba(35, 90, 148, 0.32);
   top: 0;
   left: 0;

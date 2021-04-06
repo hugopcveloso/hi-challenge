@@ -35,7 +35,7 @@ export default createStore({
     SET_SEARCH_TERM(state, searchTerm) {
       state.searchTerm = searchTerm
     },
-    SET_SELECTED_CLIENTS(state, clients) {
+    SET_HIGHLIGHTED_CLIENTS(state, clients) {
       state.selectedClients = clients
     },
     SET_CLIENT_LIMIT(state, clientLimit) {
@@ -142,23 +142,23 @@ export default createStore({
       })
       commit('SET_DATED_MEETINGS', sortedDays )
     },
-    selectClients({commit}, clickedClient) {
+    highlightClients({commit}, clickedClient) {
       let newSelected = [...this.state.selectedClients]
       if (this.state.selectedClients.includes(clickedClient)) {
         newSelected.splice(newSelected.indexOf(clickedClient), 1)
       } else {
         newSelected.push(clickedClient)
       }
-      commit('SET_SELECTED_CLIENTS', newSelected)
+      commit('SET_HIGHLIGHTED_CLIENTS', newSelected)
     },
-    selectAllClients({commit}, clients) {
+    highlightAllClients({commit}, clients) {
       let newSelectedClients = [...this.state.selectedClients]
       if(newSelectedClients.length > 0) {
         newSelectedClients = []
       } else  {
         newSelectedClients = [...this.state.clients]
       }
-      commit('SET_SELECTED_CLIENTS', newSelectedClients )
+      commit('SET_HIGHLIGHTED_CLIENTS', newSelectedClients )
     },
     selectLimit({commit, dispatch}, newLimit) {
       commit('SET_CLIENT_LIMIT', newLimit)
@@ -169,6 +169,7 @@ export default createStore({
       commit('SET_DARK_MODE')
     }
   },
+  
   // GETTERS
   getters: {
     getAllClients: (state) => {
