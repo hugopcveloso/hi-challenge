@@ -29,7 +29,7 @@ export default {
     Pagination,
   },
   computed: {
-    ...mapGetters(["isDisabled"]),
+    ...mapGetters(["isPaginationDisabled"]),
   },
 };
 </script>

@@ -30,7 +30,6 @@
     >
       Next
     </p>
-
     <svg
       @click="$store.dispatch('paginateTo', 'next')"
       :class="isPaginationDisabled('next') ? '' : 'disabled'"
@@ -47,7 +46,6 @@
       />
     </svg>
     <div class="pagination__filter">
-      <!-- Show: 8 per page -->
       <Dropdown type="limitClients" />
     </div>
   </div>

@@ -1,5 +1,9 @@
 <template>
-  <div class="select__container" v-if="type === 'company'">
+  <div
+    class="select__container"
+    :class="isDarkMode ? '' : 'select__dark--container'"
+    v-if="type === 'company'"
+  >
     <p class="current_label">{{ $store.state.selectedCompany }}</p>
     <select
       :class="isDarkMode ? '' : 'select__dark'"
@@ -17,7 +21,11 @@
     </select>
   </div>
 
-  <div class="select__container" v-else>
+  <div
+    class="select__container"
+    :class="isDarkMode ? '' : 'select__dark--container'"
+    v-else
+  >
     <p class="current_label-dark">Show</p>
     <p class="current_label">{{ getLimit }}</p>
     <p class="current_label">per page</p>
@@ -85,6 +93,11 @@ select {
   font-size: 12px;
   color: $accentblue;
 }
+.current_label-dark {
+  margin-left: 6px;
+  font-size: 12px;
+  color: $fontdark;
+}
 .select__dark {
   background: $dmodebackground !important;
 }
@@ -107,5 +120,10 @@ select {
 .select__container {
   display: flex;
   align-items: center;
+}
+.select__dark--container {
+  .current_label-dark {
+    color: $dmodefontlight !important;
+  }
 }
 </style>
