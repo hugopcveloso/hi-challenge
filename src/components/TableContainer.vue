@@ -1,7 +1,8 @@
 <template>
-  <main>
+  <main :class="isDarkMode ? '' : 'dark__main__area'">
     <TableHeader />
     <Table />
+    <Pagination class="pagination-component" />
     <transition name="fade" appear>
       <div
         class="modal-overlay"
@@ -14,15 +15,21 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Table from "./Table";
 import TableHeader from "./TableHeader";
 import CalendarContainer from "./CalendarContainer";
+import Pagination from "./Pagination";
 export default {
-  name: "Dashboard",
+  name: "TheCalendar",
   components: {
     Table,
     TableHeader,
     CalendarContainer,
+    Pagination,
+  },
+  computed: {
+    ...mapGetters(["isDisabled"]),
   },
 };
 </script>
@@ -53,6 +60,15 @@ export default {
   }
   to {
     opacity: 1;
+  }
+}
+
+.dark__main__area {
+  th,
+  td,
+  span,
+  div {
+    color: $dmodefontlight !important;
   }
 }
 </style>

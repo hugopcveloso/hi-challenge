@@ -1,11 +1,11 @@
 <template>
-  <table>
+  <table :class="isDarkMode ? '' : 'dark__table'">
     <thead>
       <tr>
         <th class="column column__check">
           <SvgCheckIcon
             :selected="areAllClientsSelected"
-            @click="$store.dispatch('selectAllClients', $store.state.clients)"
+            @click="$store.dispatch('selectAllClients', getAllClients)"
           />
         </th>
         <th class="column column__name">Name</th>
@@ -21,6 +21,7 @@
         <p>No data to dislay . . .</p>
       </tr>
     </tbody>
+
     <tbody v-else>
       <tr v-for="(client, index) in $store.state.clients" :key="client.id">
         <td class="column column__check">
@@ -115,13 +116,20 @@ export default {
         "#F40000",
         "#2878B7",
         "#C2CFE0",
+        ...colors,
+        ...colors,
       ];
       return colors[index];
     },
   },
   computed: {
-    ...mapGetters(["isClientSelected", "areAllClientsSelected"]),
-    selectedClient() {
+    ...mapGetters([
+      "isClientSelected",
+      "areAllClientsSelected",
+      "getAllClients",
+      "isDarkMode",
+    ]),
+    selectedClient(client) {
       return this.isClientSelected(client);
     },
   },
@@ -136,69 +144,76 @@ export default {
 table {
   border-collapse: collapse;
   border: 0px solid white;
+  table-layout: fixed;
   width: 90vw;
   background-color: white;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
   tbody {
     tr {
       border-top: 2px solid rgba(211, 211, 211, 0.312);
+      height: 48px;
+    }
+    td {
+      font-weight: 400;
+      color: $fontlight;
     }
   }
   .no_table_data {
     position: absolute;
+    font-family: "Poppins", sans-serif;
+    color: $fontlight;
+    margin-left: 30px;
+    padding-top: 5px;
   }
+
   .column {
+    border-radius: none;
     cursor: pointer;
     text-align: left;
-
     border-radius: 4px;
-    height: 48px;
     font-size: 13px;
     vertical-align: middle;
     font-family: "Poppins", sans-serif;
-  }
-  td {
-    font-weight: 400;
-    color: $fontlight;
-  }
-  .column__check {
-    width: 5%;
-  }
-  .column__name {
-    width: 20%;
-    .name__container {
-      margin-left: 30px;
-      font-weight: 500;
-      font-size: 15px;
-      color: #323c47;
+    &__check {
+      width: 60px;
     }
-    .circle__container {
-      padding-bottom: 5px;
-      width: 20px;
-      position: relative;
-      .circle__letter {
-        font-weight: bold;
-        z-index: 90;
-        fill: white;
+    &__name {
+      width: 25%;
+      .name__container {
+        margin-left: 30px;
+        font-weight: 500;
+        font-size: 15px;
+        color: #323c47;
       }
-      .circle__svg {
-        position: absolute;
-        height: 22px;
-        width: 22px;
+      .circle__container {
+        padding-bottom: 5px;
+        width: 20px;
+        position: relative;
+        .circle__letter {
+          font-weight: bold;
+          z-index: 90;
+          fill: white;
+        }
+        .circle__svg {
+          position: absolute;
+          height: 22px;
+          width: 22px;
+        }
       }
     }
-  }
-  .column__email {
-    width: 20%;
-  }
-  .column__company {
-    width: 15%;
-  }
-  .column__role {
-    width: 10%;
-  }
-  .column__recent {
-    width: 10%;
+    &__email {
+      width: 30%;
+    }
+    &__company {
+      width: 15%;
+    }
+    &__role {
+      width: 12%;
+    }
+    &__recent {
+      width: 12%;
+    }
   }
 
   thead {
@@ -213,6 +228,18 @@ table {
       opacity: 0.5;
       color: #334d6e;
     }
+  }
+}
+.dark__table {
+  background-color: $dmodeaccentblue !important;
+  th {
+    opacity: 0.8;
+  }
+  th,
+  td,
+  span,
+  div {
+    color: $dmodefontlight !important;
   }
 }
 </style>

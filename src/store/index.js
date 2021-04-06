@@ -1,17 +1,38 @@
 import axios from 'axios'
-import { createStore, storeKey } from 'vuex'
+import { createStore } from 'vuex'
 import moment from 'moment'
+
+
+
+const moduleA = {
+  state: () => ({
+    test:''
+  }),
+  mutations: {},
+  actions: {},
+  getters: {},
+  
+}
+
+
+
 
 export default createStore({
   state: {
     clients: [],
     showCalendarModal: false,
     meetings: [],
-    activeClient: null,
     datedMeetings: [],
     searchTerm: '',
     selectedClients: [],
+    clientLimit: 5,
+    currentPage: 1,
+    selectedCompany: 'All',
+    darkMode: true,
   },
+
+  // MUTATIONS
+
   mutations: {
     SET_CLIENTS(state, clients) {
       state.clients = clients
@@ -22,13 +43,6 @@ export default createStore({
     SET_MEETINGS(state, meetings) {
       state.meetings = meetings
     },
-    SET_ACTIVE_CLIENT(state, clientId) {
-      if (state.showCalendarModal) {
-        state.activeClient = clientId
-      } else {
-        state.activeClient = null
-      }
-    },
     SET_DATED_MEETINGS(state, datedMeetings) {
       state.datedMeetings = datedMeetings
     },
@@ -37,20 +51,72 @@ export default createStore({
     },
     SET_SELECTED_CLIENTS(state, clients) {
       state.selectedClients = clients
+    },
+    SET_CLIENT_LIMIT(state, clientLimit) {
+      state.clientLimit = clientLimit
+    },
+    SET_CURRENT_PAGE(state, direction) {
+      (direction ? state.currentPage++ : state.currentPage--) 
+    },
+    SET_SELECTED_COMPANY(state, company) {
+      state.selectedCompany = company
+    },
+    SET_CLIENTS_BY_COMPANY(state, clients){
+      state.clients = clients
+    },
+    RESET_ALL_FILTERS(state) {
+      state.searchTerm = []
+      state.selectedCompany = 'All'
+    },
+    SET_DARK_MODE(state) {
+      state.darkMode = !state.darkMode
     }
   },
+
+  // ACTIONS
+
   actions: {
     fetchClients({commit}, searchTerm = '') {
+      // Goal: Build the querystring
+      const paginationLimit = this.state.clientLimit
+      const paginationStart = this.state.currentPage === 1 ? 0 : (this.state.currentPage - 1) * paginationLimit
+      const queryString = `${process.env.VUE_APP_API_URL}/clients?name_contains=${searchTerm}&_limit=${paginationLimit}&_start=${paginationStart}`
       commit('SET_SEARCH_TERM', searchTerm)
-      axios.get(`${process.env.VUE_APP_API_URL}/clients?name_contains=${searchTerm}`)
+      axios.get(queryString)
       .then((response) => {
         commit('SET_CLIENTS', response.data)
       })
       .catch((err) => console.log(err))
     },
-    openCalendar({commit}, clientId) {
+    resetFilters({commit}) {
+      commit('RESET_ALL_FILTERS')
+    },
+    paginateTo({commit , dispatch}, direction) {
+      const checkIfLastPage = this.state.clients.length >= this.state.clientLimit
+      if(direction === 'prev' && this.state.currentPage !== 1 ) { 
+        commit('SET_CURRENT_PAGE', false)
+        dispatch('fetchClients')
+      }else if (direction === 'next' && checkIfLastPage) {
+        commit('SET_CURRENT_PAGE', true)
+        dispatch('fetchClients')
+      }
+    },
+    fetchClientsByCompany({commit}, newCompany) {
+      let filterCompany;
+      if (newCompany === 'All') {
+        filterCompany = ''
+      } else {
+        filterCompany = newCompany
+      }
+      axios.get(`${process.env.VUE_APP_API_URL}/clients?_where[company_contains]=${filterCompany}`)
+      .then((response) => {
+        commit('SET_SELECTED_COMPANY', newCompany)
+        commit('SET_CLIENTS_BY_COMPANY', response.data)
+      }).catch((err)=> console.log(err))
+    },
+
+    openCalendar({commit}) {
       commit('SHOW_MODAL')
-      commit('SET_ACTIVE_CLIENT')
     },
     async setDatedMeetings({commit}) {
       //Fetch already sorted array
@@ -84,7 +150,7 @@ export default createStore({
           sameDay.meetings.push(meeting)
         }
       });
-      //sort the array by date with todayobj
+      //Sort the array by date with the TodayObj inside. 
       const sortedDays = datedMeetings.sort((a,b) => {
         return  new Date(a.datetime) - new Date(b.datetime)
       })
@@ -93,8 +159,7 @@ export default createStore({
     selectClients({commit}, clickedClient) {
       let newSelected = [...this.state.selectedClients]
       if (this.state.selectedClients.includes(clickedClient)) {
-        let clientIndex = newSelected.indexOf(clickedClient); 
-        newSelected.splice(clientIndex, 1)
+        newSelected.splice(newSelected.indexOf(clickedClient), 1)
       } else {
         newSelected.push(clickedClient)
       }
@@ -107,18 +172,50 @@ export default createStore({
       } else  {
         newSelectedClients = [...this.state.clients]
       }
-      console.log(newSelectedClients)
       commit('SET_SELECTED_CLIENTS', newSelectedClients )
+    },
+    selectLimit({commit, dispatch}, newLimit) {
+      commit('SET_CLIENT_LIMIT', newLimit)
+      commit('RESET_ALL_FILTERS')
+      dispatch('fetchClients')
+    },
+    toggleDarkMode({commit}) {
+      commit('SET_DARK_MODE')
     }
   },
+  // GETTERS
   getters: {
+    getAllClients: (state) => {
+      return state.clients
+    },
     areAllClientsSelected: (state) => {
       return ( state.selectedClients.length === state.clients.length  && state.clients.length > 0);
     },
-    isClientSelected: (state) => {
-      return (client) => {
+    isClientSelected: (state) => (client) => {
       return state.selectedClients.includes(client)
+    },
+    isDisabled: (state) => (direction) => {
+      const checkIfLastPage = state.clients.length >= state.clientLimit ? true : false
+      if(direction === 'prev' && state.currentPage !== 1 ) {
+        return true
       }
+      if (direction === 'next' && checkIfLastPage) {
+        return  true
+      }
+      return false;
+    },
+    getCompanies: (state) => {
+      let getCompanies = state.clients.map((el)=> {
+        return el.company
+      })
+      let uniqueCompanies = [...new Set(getCompanies)];
+      return ['All', ...uniqueCompanies]
+    },
+    getLimit: (state)=> {
+      return state.clientLimit
+    },
+    isDarkMode: (state) => {
+      return state.darkMode
     }
   },
   modules: {

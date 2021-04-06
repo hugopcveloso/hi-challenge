@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer :class="isDarkMode ? '' : 'footer__dark'">
     <div class="footer__content">
       <div class="footer__nav">
         <router-link to="/" class="footer__link">Community</router-link>
@@ -17,6 +17,7 @@
       <hr class="footer__divider" />
 
       <FooterSocials />
+      <DarkModeToggler class="darkMode__toggler" />
       <p class="footer__copyright">© HiJiffy 2021. We love our users!</p>
     </div>
   </footer>
@@ -24,16 +25,23 @@
 
 <script>
 import FooterSocials from "./FooterSocials";
+import DarkModeToggler from "./DarkModeToggle";
+import { mapGetters } from "vuex";
 export default {
   name: "Footer",
   components: {
     FooterSocials,
+    DarkModeToggler,
+  },
+  computed: {
+    ...mapGetters(["isDarkMode"]),
   },
 };
 </script>
 
 <style lang="scss" scoped>
 footer {
+  position: relative;
   padding-bottom: 60px;
   max-height: 250px;
   .footer__nav {
@@ -68,8 +76,22 @@ footer {
     margin-top: 50px;
     text-align: center;
   }
+  .darkMode__toggler {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+  }
 }
-header {
-  color: yellow;
+
+.footer__dark {
+  background-color: $dmodebackground !important;
+  h1,
+  h2,
+  h3,
+  a,
+  h4,
+  p {
+    color: $dmodefontlight !important;
+  }
 }
 </style>

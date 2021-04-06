@@ -3,14 +3,13 @@
     <div v-for="day in $store.state.datedMeetings" :key="day.day">
       <div class="today__divider" v-if="day.today === true"></div>
       <div class="calendar__day" v-if="!day.today">{{ day.day }}</div>
-      <SvgTodayMarker class="today__marker" v-if="day.today" />
+      <SvgTodayMarker ref="day-ref" class="today__marker" v-if="day.today" />
       <div
         v-for="meeting in day.meetings"
         :key="meeting.id"
         class="event__container"
       >
         <div class="event">
-          <p>{{ meeting.client?.id === $store.state.activeClient }}</p>
           <p class="meeting-name" :meeting="meeting.name">
             {{ meeting.name }}
           </p>
@@ -23,26 +22,22 @@
 
 <script>
 import SvgTodayMarker from "./svgs/SvgTodayMarker";
-
+import moment from "moment";
+import { mapGetters } from "vuex";
 export default {
-  name: "MainCalendar",
+  name: "TheCalendar",
   components: {
     SvgTodayMarker,
   },
   methods: {
     getSchedule(meeting) {
-      let options = {
-        hour: "numeric",
-        minute: "numeric",
-      };
-      let startTime = new Date(meeting.start_time).toLocaleString(
-        "en-US",
-        options
-      );
-      let endTime = new Date(meeting.end_time).toLocaleString("en-US", options);
-      startTime = startTime.slice(0, -2); //removing PM
+      let startTime = moment(meeting.start_time).format("hh:mm");
+      let endTime = moment(meeting.end_time).format("hh:mm A");
       return `${startTime} - ${endTime}`;
     },
+  },
+  computed: {
+    ...mapGetters(["isDarkMode"]),
   },
   async created() {
     await this.$store.dispatch("setDatedMeetings");
@@ -53,7 +48,7 @@ export default {
 <style lang="scss" scoped>
 .main__calendar__container {
   padding: 12px;
-  max-height: 70vh;
+  max-height: 60vh;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 4px;
@@ -80,13 +75,13 @@ export default {
   margin-bottom: 10px;
 }
 .event__container {
-  padding: 7px;
+  padding: 9px;
   background-color: $accentblue;
   color: $backgroundgrey;
   font-size: 14px;
   font-weight: 500;
   border-radius: 5px;
-  line-height: 1.3;
+  line-height: 1.4;
   margin-bottom: 8px;
   .meeting-schedule {
     margin-top: 4px;

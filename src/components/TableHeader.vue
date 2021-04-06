@@ -3,19 +3,7 @@
     <div class="filter__container">
       Company
       <div class="filter__element">
-        <span> All </span>
-        <svg
-          width="7"
-          height="3"
-          viewBox="0 0 7 3"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3.5 3L0.468911 -9.41288e-08L6.53109 4.35844e-07L3.5 3Z"
-            fill="#AEAEAE"
-          />
-        </svg>
+        <Dropdown type="company" />
       </div>
     </div>
     <button class="add_contact">Add contact</button>
@@ -23,7 +11,12 @@
 </template>
 
 <script>
-export default {};
+import Dropdown from "./Dropdown";
+export default {
+  components: {
+    Dropdown,
+  },
+};
 </script>
 
 <style lang="scss" scoped>

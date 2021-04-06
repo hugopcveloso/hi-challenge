@@ -18,11 +18,11 @@
         </div>
       </div>
       <div class="calendar__subheader">
-        <div class="today__btn">Today</div>
+        <div class="today__btn" ref="today-btn">Today</div>
         <SvgMenu class="subheader__svg" />
       </div>
       <div class="calendar__body">
-        <MainCalendar />
+        <TheCalendar />
       </div>
     </div>
   </transition>
@@ -33,7 +33,8 @@ import SvgCaretDown from "./svgs/SvgCaretDown";
 import SvgFullScreen from "./svgs/SvgFullScreen";
 import SvgClose from "./svgs/SvgClose";
 import SvgMenu from "./svgs/SvgMenu";
-import MainCalendar from "./MainCalendar";
+import TheCalendar from "./TheCalendar";
+import moment from "moment";
 export default {
   name: "Calendar Container",
   components: {
@@ -41,17 +42,11 @@ export default {
     SvgFullScreen,
     SvgClose,
     SvgMenu,
-    MainCalendar,
+    TheCalendar,
   },
-  methods: {},
   computed: {
     getDate: () => {
-      let options = {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      };
-      return new Date().toLocaleDateString("en-US", options);
+      return moment().format("ddd, MMM Do ");
     },
   },
 };
@@ -60,10 +55,11 @@ export default {
 <style lang="scss" scoped>
 .calendar__wrapper {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-height: 400px;
+  height: fit-content;
+  top: 60px;
+  left: 0;
+  bottom: 60px;
+  right: 0;
   margin: 0 auto;
   z-index: 99;
   display: block;
@@ -71,6 +67,7 @@ export default {
   background: #f6f7f8;
   box-shadow: 0px 25px 65px rgba(4, 111, 226, 0.5);
   border-radius: 8px;
+  transition: all 0.5s linear;
 }
 
 .calendar__header {
@@ -134,11 +131,11 @@ export default {
   }
 }
 
+//Pop-animation
 .pop-enter,
 .pop-leave-to {
   opacity: 0;
 }
-
 .pop-enter-active {
   animation: popping 0.5s;
 }
@@ -146,13 +143,11 @@ export default {
 @keyframes popping {
   from {
     opacity: 0;
-    width: 0;
-    height: 0px;
+    transform: translateX(-100px);
   }
   to {
     opacity: 1;
-    width: 340px;
-    height: auto;
+    transform: translateX(0);
   }
 }
 </style>

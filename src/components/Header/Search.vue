@@ -1,5 +1,5 @@
 <template>
-  <div class="search__container">
+  <div class="search__container" :class="isDarkMode ? '' : 'search__dark'">
     <svg
       width="16"
       height="16"
@@ -22,12 +22,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data: () => ({
     debouce: null,
     typing: null,
   }),
   computed: {
+    ...mapGetters(["isDarkMode"]),
     searching: {
       get() {
         return this.$store.state.searchTerm;
@@ -60,6 +62,12 @@ export default {
     &::placeholder {
       color: #90a0b7;
     }
+  }
+}
+
+.search__dark {
+  .search__field {
+    background-color: $dmodeaccentblue !important;
   }
 }
 </style>

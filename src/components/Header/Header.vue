@@ -1,7 +1,10 @@
 <template>
-  <header class="header">
+  <header class="header" :class="isDarkMode ? '' : 'header__dark'">
     <div class="header__content">
-      <h4 class="header__content--logo">Hi Jiffy</h4>
+      <router-link to="/" class="logo__link"
+        ><h4 class="header__content--logo">Hi Jiffy</h4></router-link
+      >
+
       <Search />
       <HeaderUser />
     </div>
@@ -9,13 +12,18 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Search from "./Search";
 import HeaderUser from "./HeaderUser";
+
 export default {
   name: "Header",
   components: {
     Search,
     HeaderUser,
+  },
+  computed: {
+    ...mapGetters(["isDarkMode"]),
   },
 };
 </script>
@@ -27,7 +35,9 @@ export default {
   display: grid;
   place-items: center;
   border-bottom: 2px solid #ebeff2;
-
+  .logo__link {
+    text-decoration: none;
+  }
   .header__content {
     width: 90vw;
     display: grid;
@@ -43,5 +53,9 @@ export default {
       display: flex;
     }
   }
+}
+.header__dark {
+  background-color: $dmodeaccentblue !important;
+  border-bottom: 2px solid black;
 }
 </style>
