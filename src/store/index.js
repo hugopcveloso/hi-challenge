@@ -3,11 +3,12 @@ import { createStore } from 'vuex'
 import moment from 'moment'
 
 
+
+
 export default createStore({
   state: {
     clients: [],
     showCalendarModal: false,
-    meetings: [],
     datedMeetings: [],
     searchTerm: '',
     selectedClients: [],
@@ -22,12 +23,6 @@ export default createStore({
   mutations: {
     SET_CLIENTS(state, clients) {
       state.clients = clients
-    },
-    SHOW_MODAL(state) {
-      state.showCalendarModal = !state.showCalendarModal
-    },
-    SET_MEETINGS(state, meetings) {
-      state.meetings = meetings
     },
     SET_DATED_MEETINGS(state, datedMeetings) {
       state.datedMeetings = datedMeetings
@@ -51,8 +46,11 @@ export default createStore({
       state.clients = clients
     },
     RESET_ALL_FILTERS(state) {
-      state.searchTerm = []
+      state.searchTerm = ''
       state.selectedCompany = 'All'
+    },
+    SHOW_MODAL(state) {
+      state.showCalendarModal = !state.showCalendarModal
     },
     SET_DARK_MODE(state) {
       state.darkMode = !state.darkMode
@@ -74,44 +72,14 @@ export default createStore({
       })
       .catch((err) => console.log(err))
     },
-    resetFilters({commit}) {
-      commit('RESET_ALL_FILTERS')
-    },
-    paginateTo({commit , dispatch}, direction) {
-      const checkIfLastPage = this.state.clients.length >= this.state.clientLimit
-      if(direction === 'prev' && this.state.currentPage !== 1 ) { 
-        commit('SET_CURRENT_PAGE', false)
-        dispatch('fetchClients')
-      }else if (direction === 'next' && checkIfLastPage) {
-        commit('SET_CURRENT_PAGE', true)
-        dispatch('fetchClients')
-      }
-    },
-    fetchClientsByCompany({commit}, newCompany) {
-      let filterCompany;
-      if (newCompany === 'All') {
-        filterCompany = ''
-      } else {
-        filterCompany = newCompany
-      }
-      axios.get(`${process.env.VUE_APP_API_URL}/clients?_where[company_contains]=${filterCompany}`)
-      .then((response) => {
-        commit('SET_SELECTED_COMPANY', newCompany)
-        commit('SET_CLIENTS_BY_COMPANY', response.data)
-      }).catch((err)=> console.log(err))
-    },
-
-    openCalendar({commit}) {
-      commit('SHOW_MODAL')
-    },
-    async setDatedMeetings({commit}) {
+    async setDatedMeetings({commit}) { //Fetches the client, their meetings and creates a calendar of day objects
       //Fetch already sorted array
       const meetingsResponse = await axios.get(`${process.env.VUE_APP_API_URL}/meetings?_sort=end_time`)
       .then((response) => {
         return response.data
       }).catch((err)=> console.log(err))
-      // Goal: loop through all the meetings, and create a new array of "day" objects
-      // Push Today to the array with of days"today:true" . and sorting them again
+      // GOAL: loop through all the (already sorted) meetings, and create a new array of "day" objects
+      // Push Today to the array with of days"today:true", and sort the array again
       let datedMeetings = [];
       datedMeetings.push({
         datetime: moment(Date.now()).format(),
@@ -142,6 +110,33 @@ export default createStore({
       })
       commit('SET_DATED_MEETINGS', sortedDays )
     },
+
+    paginateTo({commit , dispatch}, direction) {
+      const checkIfLastPage = this.state.clients.length >= this.state.clientLimit
+      if(direction === 'prev' && this.state.currentPage !== 1 ) { 
+        commit('SET_CURRENT_PAGE', false)
+        dispatch('fetchClients')
+      }else if (direction === 'next' && checkIfLastPage) {
+        commit('SET_CURRENT_PAGE', true)
+        dispatch('fetchClients')
+      }
+    },
+    fetchClientsByCompany({commit}, newCompany) {
+      let filterCompany;
+      if (newCompany === 'All') {
+        filterCompany = ''
+      } else {
+        filterCompany = newCompany
+      }
+      axios.get(`${process.env.VUE_APP_API_URL}/clients?_where[company_contains]=${filterCompany}`)
+      .then((response) => {
+        commit('SET_SELECTED_COMPANY', newCompany)
+        commit('SET_CLIENTS_BY_COMPANY', response.data)
+      }).catch((err)=> console.log(err))
+    },
+    openCalendar({commit}) {
+      commit('SHOW_MODAL')
+    },
     highlightClients({commit}, clickedClient) {
       let newSelected = [...this.state.selectedClients]
       if (this.state.selectedClients.includes(clickedClient)) {
@@ -167,7 +162,10 @@ export default createStore({
     },
     toggleDarkMode({commit}) {
       commit('SET_DARK_MODE')
-    }
+    },
+    resetFilters({commit}) {
+      commit('RESET_ALL_FILTERS')
+    },
   },
   
   // GETTERS
@@ -181,7 +179,8 @@ export default createStore({
     isClientSelected: (state) => (client) => {
       return state.selectedClients.includes(client)
     },
-    isDisabled: (state) => (direction) => {
+    isPaginationDisabled: (state) => (direction) => {
+      // checks if it's the last page, in order to Disable the pagination button
       const checkIfLastPage = state.clients.length >= state.clientLimit ? true : false
       if(direction === 'prev' && state.currentPage !== 1 ) {
         return true
@@ -191,6 +190,7 @@ export default createStore({
       }
       return false;
     },
+    // For the "dropdown", it gets Companies from the current clients, and adds the All option.
     getCompanies: (state) => {
       let uniqueCompanies = []
       if (state.clients.length > 0) {

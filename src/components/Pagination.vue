@@ -3,7 +3,7 @@
     <svg
       @click="$store.dispatch('paginateTo', 'prev')"
       class="pagination__arrow"
-      :class="isDisabled('prev') ? '' : 'disabled'"
+      :class="isPaginationDisabled('prev') ? '' : 'disabled'"
       width="12"
       height="20"
       viewBox="0 0 12 20"
@@ -18,7 +18,7 @@
     <p
       @click="$store.dispatch('paginateTo', 'prev')"
       class="pagination__text"
-      :class="isDisabled('prev') ? '' : 'disabled'"
+      :class="isPaginationDisabled('prev') ? '' : 'disabled'"
     >
       Prev
     </p>
@@ -26,14 +26,14 @@
     <p
       @click="$store.dispatch('paginateTo', 'next')"
       class="pagination__text"
-      :class="isDisabled('next') ? '' : 'disabled'"
+      :class="isPaginationDisabled('next') ? '' : 'disabled'"
     >
       Next
     </p>
 
     <svg
       @click="$store.dispatch('paginateTo', 'next')"
-      :class="isDisabled('next') ? '' : 'disabled'"
+      :class="isPaginationDisabled('next') ? '' : 'disabled'"
       class="pagination__arrow"
       width="12"
       height="20"
@@ -64,9 +64,9 @@ export default {
   },
   method: {},
   computed: {
-    ...mapGetters(["isDisabled", "isDarkMode"]),
+    ...mapGetters(["isPaginationDisabled", "isDarkMode"]),
     disabledClasses(direction) {
-      return isDisabled(direction);
+      return isPaginationDisabled(direction);
     },
   },
 };
