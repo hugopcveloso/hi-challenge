@@ -3,20 +3,6 @@ import { createStore } from 'vuex'
 import moment from 'moment'
 
 
-
-const moduleA = {
-  state: () => ({
-    test:''
-  }),
-  mutations: {},
-  actions: {},
-  getters: {},
-  
-}
-
-
-
-
 export default createStore({
   state: {
     clients: [],
@@ -205,10 +191,15 @@ export default createStore({
       return false;
     },
     getCompanies: (state) => {
-      let getCompanies = state.clients.map((el)=> {
-        return el.company
-      })
-      let uniqueCompanies = [...new Set(getCompanies)];
+      let uniqueCompanies = []
+      if (state.clients.length > 0) {
+        let getCompanies = state.clients.map((el)=> {
+          return el.company
+        })
+        let uniqueCompanies = [...new Set(getCompanies)];
+      }
+      
+     
       return ['All', ...uniqueCompanies]
     },
     getLimit: (state)=> {
