@@ -62,9 +62,17 @@ export default createStore({
   actions: {
     fetchClients({commit}, searchTerm = '') {
       // Goal: Build the querystring
+      let filterCompany;
+      if (this.state.selectedCompany === 'All') {
+        filterCompany = ''
+      } else {
+        filterCompany = this.state.selectedCompany
+      }
       const paginationLimit = this.state.clientLimit
       const paginationStart = this.state.currentPage === 1 ? 0 : (this.state.currentPage - 1) * paginationLimit
-      const queryString = `${process.env.VUE_APP_API_URL}/clients?name_contains=${searchTerm}&_limit=${paginationLimit}&_start=${paginationStart}`
+      
+      // const queryString = `${process.env.VUE_APP_API_URL}/clients?name_contains=${searchTerm}&_limit=${paginationLimit}&_start=${paginationStart}`
+      const queryString = `${process.env.VUE_APP_API_URL}/clients?_where[0][company_contains]=${filterCompany}&_where[1][name_contains]=${searchTerm}&_limit=${paginationLimit}&_start=${paginationStart}`
       commit('SET_SEARCH_TERM', searchTerm)
       axios.get(queryString)
       .then((response) => {
@@ -121,18 +129,15 @@ export default createStore({
         dispatch('fetchClients')
       }
     },
-    fetchClientsByCompany({commit}, newCompany) {
+    fetchClientsByCompany({commit, dispatch}, newCompany) {
       let filterCompany;
       if (newCompany === 'All') {
         filterCompany = ''
       } else {
         filterCompany = newCompany
       }
-      axios.get(`${process.env.VUE_APP_API_URL}/clients?_where[company_contains]=${filterCompany}`)
-      .then((response) => {
-        commit('SET_SELECTED_COMPANY', newCompany)
-        commit('SET_CLIENTS_BY_COMPANY', response.data)
-      }).catch((err)=> console.log(err))
+      commit('SET_SELECTED_COMPANY', newCompany)
+      dispatch('fetchClients')
     },
     openCalendar({commit}) {
       commit('SHOW_MODAL')
@@ -157,7 +162,6 @@ export default createStore({
     },
     selectLimit({commit, dispatch}, newLimit) {
       commit('SET_CLIENT_LIMIT', newLimit)
-      commit('RESET_ALL_FILTERS')
       dispatch('fetchClients')
     },
     toggleDarkMode({commit}) {
